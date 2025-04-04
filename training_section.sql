@@ -840,9 +840,95 @@ SELECT *
 FROM (SELECT MAX(price) FROM products) AS p;
 
 -- 100. Example of a Subquery in a From
-SELECT AVG(order_count)
+select AVG(order_count)
 FROM (
 	SELECT user_id, COUNT(*) AS order_count
 	FROM orders
 	GROUP BY user_id
-) AS P;
+) AS p
+
+-- Solution
+SELECT MAX(p.avg_price) AS max_avg_price
+FROM(
+	SELECT AVG(price) as avg_price
+	FROM phones
+	GROUP BY manufacturer
+) AS p
+
+-- 103. Subqueries in a Join Clause
+SELECT first_name
+FROM users
+JOIN (
+	SELECT user_id 
+	FROM orders
+	WHERE product_id = 3
+) AS o
+ON o.user_id = users.id;
+
+-- 104. More Useful - Subqueries with Where
+SELECT id
+FROM products
+WHERE price / weight > 50;
+
+SELECT id
+FROM orders
+WHERE product_id IN (
+	SELECT id
+	FROM products
+	WHERE price / weight > 50
+);
+
+-- 105. Data Structure with Where Subqueries
+SELECT name
+FROM products
+WHERE price > (
+	SELECT AVG(price)
+	FROM products
+);
+
+-- 108. The Not In Operator with a List
+-- subquery
+SELECT department
+FROM products
+WHERE price < 100;
+
+-- Full Query
+SELECT name, department
+FROM products
+WHERE department NOT IN(
+	SELECT department
+	FROM products
+	WHERE price < 100
+);
+
+-- 109. A New Where Operator
+-- subquery
+SELECT price
+FROM products
+WHERE department = 'Industrial';
+
+-- full query
+SELECT name, department, price
+FROM products
+WHERE price > ALL (
+	SELECT price
+	FROM products
+	WHERE department = 'Industrial'
+);
+
+-- 110. Finally Some!
+-- subquery
+SELECT price
+FROM products
+WHERE department = 'Industrial';
+
+-- full query
+SELECT name, department, price
+FROM products
+WHERE price > SOME(
+	SELECT price
+	FROM products
+	WHERE department = 'Industrial'
+);
+
+-- 113. Probably Too Much About Correlated Subqueries
