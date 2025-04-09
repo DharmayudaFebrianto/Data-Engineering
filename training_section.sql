@@ -932,3 +932,20 @@ WHERE price > SOME(
 );
 
 -- 113. Probably Too Much About Correlated Subqueries
+-- Show the name, department, price of the most expensive product
+-- in each department
+-- subquery
+SELECT MAX(price)
+FROM products AS p2
+WHERE p2.department = p1.department;
+
+-- full query
+SELECT name, department, price
+FROM products AS p1
+WHERE p1.price = (
+	SELECT MAX(price)
+	FROM products AS p2
+	WHERE p2.department = p1.department
+);
+
+-- 114. More on Correlated Subqueries
